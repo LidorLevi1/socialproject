@@ -1,0 +1,168 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<style>
+    .theme{
+        position: static;
+    }
+    .profilepic{
+        position: relative;
+    }
+    .right{
+        text-align: center;
+    }
+
+
+</style>
+
+{% for profiles in profile %}
+    <div style="text-align: center;">
+        <img src="https://th.bing.com/th/id/R.cb4cd063f9e8a4bcd73fadf219ffd45d?rik=8F7LGAWf%2fpI2QA&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fO8RrjHl.jpg&ehk=anaISvyhvdtOCQbsy8eDMQUoOzVYnJ5F2XFLiT5%2bpsk%3d&risl=&pid=ImgRaw&r=0"  class="theme" style="width:1300px ;height:280px;border-radius: 0.5%;">
+        <img src="{{profiles.imageUrl}}" class="profilepic" name="profile" alt="Avatar" style="width:300px;height:300px;border-radius: 50%;top: 30px;top: -180px;"/>
+    </div> 
+    <div style="text-align: center; margin-top: -150px;color: azure;">
+        <h1 name="profile" >{{profiles.user}}</h1>
+    </div>
+
+
+    <div class="right" role="toolbar" aria-label="Toolbar with button groups" style="margin-top: 30px;">
+
+
+        <a href="{% url 'profile' profiles.user %}" type="button" class="btn btn-primary">Timeline</a>
+        <a href="{% url 'profileabout' profiles.user %}" type="button" class="btn btn-primary">About</a>
+        <a href="{% url 'profilefriends' profiles.user %}" type="button" class="btn btn-primary">Friends</a>
+        <a href="" type="button" class="btn btn-primary">Groups</a>
+
+    {% if profiles.user == request.user %} 
+         <a class="btn btn-dark" href="{% url 'editprofile' user.username %}">Edit Profile</a>
+         <a class="btn btn-danger" href="{% url 'profileremove' user.username %}">Remove Profile</a>
+    {% endif %}
+    </div>
+    <div style="margin-top:10px ; text-align: center;" >
+    <form action="{% url 'add_friend' profiles.user %}" method="post">
+        {% csrf_token %}
+        {% if profiles.user != request.user %}
+        {% if request.user.profile in profiles.friends.all %}
+        <button href="" type="submit" class="btn btn-danger">Unfollow</button>
+
+        {% else %}
+        <button href="" type="submit" class="btn btn-success">follow</button>
+        {% endif %}
+        {% endif %}
+    </form>
+    </div>
+    {% if profiles.user == request.user %} 
+    <form action="{% url 'addpost' user.id %}" method="post">
+        {% csrf_token %}
+        <div class="card" style="width: 81rem;margin-top: 20px;">
+            <div class="card-body">
+                <div style="text-align: left;">
+                    <img src="{{profiles.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;" class="profile-pic" alt="Avatar" >
+                    <a>{{profiles.user}}</a>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label"></label>
+                    <input type="text" class="form-control" name='imageUrl' placeholder="ImageUrl">
+                  </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"></label>
+                <input type="text" class="form-control" name='body' placeholder="What's on youre mind...">
+              </div>
+              <input type="submit" value="פרסם פוסט" class="btn btn-primary" />
+            </form>
+            
+            </div>
+          </div>
+    </form>
+    {% endif %}
+
+    
+
+
+
+
+{% for posts in post %}
+<div class="card text-dark bg-light mb-3" style="margin-top:40px ;text-align: left;" >
+    <a href="{% url 'profile' posts.user %}"><img  src="{{profiles.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+    <a href="{% url 'profile' posts.user %}">{{posts.user}}</a>
+    <a href="{% url 'post' posts.id %}">View Post</a>
+    <div class="card-header"> created {{posts.created|timesince}} </div>
+    {% if posts.user == request.user %} 
+    <span style="float: right;">
+        <a href="{%url 'editpost' posts.id %}" class="btn btn-sm btn-secondary">Edit</a>
+        <a href="{%url 'removepost' posts.id %}" class="btn btn-sm btn-secondary">Delete</a>
+    </span>
+    {% endif %}
+    <div class="card-body" style="text-align: right;">
+    {% if posts.imageUrl == "" %}
+    {% else %}
+        <img src="{{posts.imageUrl}}" id="" style="height: 400px;width: 700px;">
+    {% endif %}
+
+        <div class="card">
+            <p class="card-text">{{posts.body|linebreaks}}</p>
+        </div>    
+    </div>
+    
+    <form action="{% url 'like_post' posts.id %}" method="POST">
+        {% csrf_token %} 
+    <div>
+        {% if user.profile in posts.likes.all %}
+            <button type="submit" name="post_id" value="{{posts.id}}" class="btn btn-secondary" style="margin-top: 20px;">unlike</button>
+        {% else %}
+            <button type="submit" name="post_id" value="{{posts.id}}" class="btn btn-primary" style="margin-top: 20px;">like</button>
+        {% endif %}
+        <h1>Likes - {{ posts.likes.count }}</h1>
+
+    </div>
+    </form>
+
+
+
+    <div class="card-body">
+        <h5 class="card-title">comments</h5>
+        <div style="overflow-y: scroll;height:200px;margin-top: 20px; ">
+        {% for comment in posts.comment_set.all %}
+         
+        <div class="card" style="margin-top: 30px;" >
+        {% if comment.user == request.user %}
+        <span style="float: right;">
+            <a href="{%url 'editcomment' comment.id %}" class="btn btn-sm btn-secondary">Edit</a>
+            <a href="{%url 'removecomment' comment.id %}" class="btn btn-sm btn-secondary">Delete</a>
+        </span>
+        {% endif %}
+
+        
+            <div class="card-body">
+                
+                    <a href="{% url 'profile' comment.user %}"><img src="{{comment.user.profile.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+                <a href="{% url 'profile' comment.user %}"><h5 class="card-title">{{comment.user}}</h5></a>
+                <h6 class="card-subtitle mb-2 text-muted">{{comment.created|timesince}}</h6>
+                <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+                    <p class="card-text">{{comment.body}}</p>
+                </div>
+                     
+              
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>   
+          <div class="card" style="margin-top: 30px;text-align: right;" >
+            <div class="card-body">
+                <form method="post" action="{% url 'addcomment' posts.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">הוספת תגובה</label>
+                        <textarea class="form-control" name="body" id="" rows="3"></textarea>
+                        <input type="submit" value="מה דעתך?" class="btn btn-primary" style="margin-top: 20px;">
+                    </div>
+                </form>
+                
+            </div>
+          </div>
+      </div>
+  
+  {% endfor %}
+  {% endfor %}
+{% endblock %}

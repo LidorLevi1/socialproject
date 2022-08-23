@@ -1,0 +1,89 @@
+{% extends 'main.html' %}
+{% block content %}
+
+    <style>
+        .label{
+            color: white;
+        }
+    </style>
+
+
+<div class="card text-dark bg-light mb-3">
+  
+    <a href="{% url 'profile' post.user.profile.user %}"><img  src="{{post.user.profile.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+    <a href="{% url 'profile' post.user.profile.user %}">{{post.user}}</a>
+    <div class="card-header"> created {{post.created|timesince}} </div>
+    {% if post.user == request.user %} 
+    <span style="float: right;">
+        <a href="{%url 'editpost' post.id %}" class="btn btn-sm btn-secondary">Edit</a>
+        <a href="{%url 'removepost' post.id %}" class="btn btn-sm btn-secondary">Delete</a>
+    </span>
+    {% endif %}
+    <div class="card-body" style="text-align: right;">
+        
+        {% if post.imageUrl == "" %}
+        {% else %}
+        <img src="{{post.imageUrl}}" id="" style="height: 400px;width: 700px;">
+        
+        {% endif %}
+    
+
+        <div class="card">
+            <p class="card-text">{{post.body|linebreaks}}</p>
+        </div>    
+    </div>
+   
+    <form action="{% url 'like_post' post.id %}" method="POST">
+        {% csrf_token %} 
+    <div>
+        {% if user.profile in post.likes.all %}
+            <button type="submit" name="post_id" value="{{post.id}}" class="btn btn-secondary" style="margin-top: 20px;">unlike</button>
+        {% else %}
+            <button type="submit" name="post_id" value="{{post.id}}" class="btn btn-primary" style="margin-top: 20px;">like</button>
+        {% endif %}
+        <h1>Likes - {{ post.likes.count }}</h1>
+    </div>
+    </form>
+    <h5>comments</h5>
+    <div style="overflow-y: scroll;height:200px ; ">
+        {% for comment in comments %} 
+        <div class="card" style="margin-top: 30px;" >
+        {% if comment.user == request.user %}
+        <span style="float: right;">
+            <a href="{%url 'editcomment' comment.id %}" class="btn btn-sm btn-secondary">Edit</a>
+            <a href="{%url 'removecomment' comment.id %}" class="btn btn-sm btn-secondary">Delete</a>
+        </span>
+        {% endif %}
+            <div class="card-body">
+                <a href="{% url 'profile' comment.user%}"><img src="{{comment.user.profile.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+              <a href="{% url 'profile' comment.user %}"><h5 class="card-title">{{comment.user}}</h5></a>
+              <h6 class="card-subtitle mb-2 text-muted">{{comment.created|timesince}}</h6>
+              <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+                <p class="card-text">{{comment.body}}</p>
+              </div>              
+            </div>
+    </div>
+    
+    {% endfor %}
+        
+    </div>
+    <div class="card-body" style="margin-top: 30px;">
+      
+          <div class="card" style="margin-top: 30px;text-align: right;" >
+            <div class="card-body">
+                <form method="post" action="{% url 'addcomment' post.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">הוספת תגובה</label>
+                        <textarea class="form-control" name="body" id="" rows="3"></textarea>
+                        <input type="submit" value="מה דעתך?" class="btn btn-primary" style="margin-top: 20px;">
+                    </div>
+                </form>
+                
+            </div>
+          </div>
+      </div>
+  </div>
+  
+
+{% endblock %}

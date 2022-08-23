@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% block content %}
+
+    <style>
+        .label{
+            color: white;
+        }
+    </style>
+    <h5>Edit Profile</h5>
+<form action="" method="post">
+  {% csrf_token %}
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="label">Profile Image</label>
+        <textarea required="" class="form-control" name="imageUrl" rows="3">{{user.profile.imageUrl}}</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="label">First Name</label>
+        <textarea required="" class="form-control" name="firstname" rows="3">{{user.profile.first_name}}</textarea>
+      </div>
+      
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="label">Last Name</label>
+        <textarea required="" class="form-control" name="lastname" rows="3">{{user.profile.last_name}}</textarea>
+      </div>
+ 
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="label">Adress</label>
+        <textarea required="" class="form-control" name="adress" rows="3">{{user.profile.city}}</textarea>
+      </div>
+      <div class="mb-3">
+          <label for="exampleFormControlInput1" class="label">Date of Birth</label>
+      <input required="" type = "text"  class="form-control" name='date'  onfocus="(this.type='date')" placeholder="{{user.profile.date}}" >
+    </div>
+    <div style="text-align: center;">
+      <input type="submit" value="Update Profile" class="btn btn-dark">
+    </div>
+
+
+</form>
+{% endblock %}

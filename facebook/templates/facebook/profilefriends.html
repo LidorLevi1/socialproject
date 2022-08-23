@@ -1,0 +1,66 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<style>
+    .theme{
+        position: static;
+    }
+    .profilepic{
+        position: relative;
+    }
+    .right{
+        text-align: center;
+    }
+
+
+</style>
+
+{% for friends in friend %}
+    <div style="text-align: center;">
+        <img src="https://th.bing.com/th/id/R.cb4cd063f9e8a4bcd73fadf219ffd45d?rik=8F7LGAWf%2fpI2QA&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fO8RrjHl.jpg&ehk=anaISvyhvdtOCQbsy8eDMQUoOzVYnJ5F2XFLiT5%2bpsk%3d&risl=&pid=ImgRaw&r=0"  class="theme" style="width:1300px ;height:280px;border-radius: 0.5%;">
+        <img src="{{friends.imageUrl}}" class="profilepic" name="profile" alt="Avatar" style="width:300px;height:300px;border-radius: 50%;top: 30px;top: -180px;"/>
+    </div> 
+    <div style="text-align: center; margin-top: -150px;color: azure;">
+        <h1 name="profile" >{{friends.user}}</h1>
+    </div>
+
+
+    <div class="right" role="toolbar" aria-label="Toolbar with button groups" style="margin-top: 30px;">
+        <a href="{% url 'profile' friends.user %}" type="button" class="btn btn-primary">Timeline</a>
+        <a href="{% url 'profileabout' friends.user %}" type="button" class="btn btn-primary">About</a>
+        <a href="{% url 'profilefriends' friends.user %}" type="button" class="btn btn-primary">Friends</a>
+        <a href="" type="button" class="btn btn-primary">Groups</a>
+
+
+
+{% if friends.user == request.user.profile.user %} 
+        <a class="btn btn-dark" href="{% url 'editprofile' user.profile.user %}">Edit Profile</a>
+        <a class="btn btn-danger" href="{% url 'profileremove' user.profile.user %}">Remove Profile</a>
+    </div>
+
+
+{% endif %}
+
+
+<div class="row" style="margin-top: 20px;color: azure;" > 
+    <div id="list-example" class="list-group col-4">
+        <a class="list-group-item list-group-item-action " href="#list-item-1">followers</a>
+
+
+    </div>
+    <div data-bs-spy="scroll" style="overflow-y: scroll;height:300px ; " data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example col border p-3 rounded" tabindex="0">
+        {% if friends.user == request.user.profile.user %} 
+        {% endif %}
+        <h4 id="list-item-1">Followers</h4>
+        
+        
+        <ul>
+            <li>
+              {{ friends.friends.all }}
+            </li>
+        </ul>
+       
+    </div>
+</div> 
+{% endfor %}
+{% endblock %}

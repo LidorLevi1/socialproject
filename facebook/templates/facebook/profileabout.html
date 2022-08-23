@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<style>
+    .theme{
+        position: static;
+    }
+    .profilepic{
+        position: relative;
+    }
+    .right{
+        text-align: center;
+    }
+
+
+</style>
+
+{% for abouts in about %}
+    <div style="text-align: center;">
+        <img src="https://th.bing.com/th/id/R.cb4cd063f9e8a4bcd73fadf219ffd45d?rik=8F7LGAWf%2fpI2QA&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fO8RrjHl.jpg&ehk=anaISvyhvdtOCQbsy8eDMQUoOzVYnJ5F2XFLiT5%2bpsk%3d&risl=&pid=ImgRaw&r=0"  class="theme" style="width:1300px ;height:280px;border-radius: 0.5%;">
+        <img src="{{abouts.imageUrl}}" class="profilepic" name="profile" alt="Avatar" style="width:300px;height:300px;border-radius: 50%;top: 30px;top: -180px;"/>
+    </div> 
+    <div style="text-align: center; margin-top: -150px;color: azure;">
+        <h1 name="profile" >{{abouts.user}}</h1>
+    </div>
+
+
+    <div class="right" role="toolbar" aria-label="Toolbar with button groups" style="margin-top: 30px;">
+        <a href="{% url 'profile' abouts.user %}" type="button" class="btn btn-primary">Timeline</a>
+        <a href="{% url 'profileabout' abouts.user %}" type="button" class="btn btn-primary">About</a>
+        <a href="{% url 'profilefriends' abouts.user %}" type="button" class="btn btn-primary">Friends</a>
+        <a href="" type="button" class="btn btn-primary">Groups</a>
+
+
+
+{% if abouts.user == request.user.profile.user %} 
+        <a class="btn btn-dark" href="{% url 'editprofile' user.profile.user %}">Edit Profile</a>
+        <a class="btn btn-danger" href="{% url 'profileremove' user.profile.user %}">Remove Profile</a>
+    </div>
+{% endif %}
+
+<div style="margin-top:10px ; text-align: center;" >
+    <form action="{% url 'add_friend' abouts.user %}" method="post">
+        {% csrf_token %}
+        {% if abouts.user != request.user %}
+        {% if request.user.profile in abouts.friends.all %}
+        <button href="" type="submit" class="btn btn-danger">Unfollow</button>
+
+        {% else %}
+        <button href="" type="submit" class="btn btn-success">follow</button>
+        {% endif %}
+        {% endif %}
+    </form>
+
+<div style="text-align:center ;color: azure;">
+    <h1>First Name: {{abouts.first_name}}</h1>
+    <h1>Last Name: {{abouts.last_name}}</h1>
+    <h1>Adress: {{abouts.city}}</h1>
+    <h1>Date of Birth: {{abouts.date}}</h1>
+    </div>
+{% endfor %}
+
+{% endblock %}

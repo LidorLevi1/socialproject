@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .label{
+            color: white;
+        }
+        img {
+          border-radius: 50%;
+        }
+    </style>
+<form action="" method="post">
+    {%csrf_token%}
+    <div class="card" style="width: 80rem;">
+        <div class="card-body">
+            <div>
+                <img src="{{user.profile.imageUrl}}" class="profile-pic" alt="Avatar" name="imageUrl" style="width:50px">
+                <a>{{user.profile.user}}</a>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"></label>
+                <textarea required="" class="form-control" name="body" >{{comment.body}}</textarea>
+              </div>
+     
+              <input type="submit" value="edit" class="btn btn-primary"/>
+        </form>
+        
+        </div>
+      </div>
+    </form>
+{% endblock %}

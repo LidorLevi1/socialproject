@@ -1,0 +1,33 @@
+{%extends 'main.html'%}
+{%block content%}
+
+<ul class="list-group list-group-flush">
+<h1 style="font-size:70px ; " >profiles</h1>
+{% for profile in profiles %}
+
+<li>
+    <a href="{% url 'profile' profile.user.profile.user %}"><img src="{{profile.user.profile.imageUrl}}" style="border-radius: 50%;width: 50px; height: 50px;"></a> 
+    <a href="{% url 'profile' profile.user.profile.user %}" style="font-size:50px ;" >{{profile.user}}</a>
+</li>
+
+{% endfor %}
+
+</ul>
+
+
+
+
+
+
+<ul class="list-group list-group-flush">
+    <h1 style="font-size:70px ; ">Posts</h1>
+{% for result in results%}
+<li>
+    <a href="{% url 'profile' result.user.profile.user %}"><img src="{{result.user.profile.imageUrl}}" style="border-radius: 50%;width: 50px; height: 50px;"></a>
+    <a href="{% url 'profile' result.user.profile.user %}" style="font-size:50px ;" >{{result.user}}</a>
+    <a href="{% url 'post' result.id %}" style="font-size:50px ;" >Post: {{result.body}}</a>
+</li>
+{%endfor%}
+</ul>
+
+{%endblock%}

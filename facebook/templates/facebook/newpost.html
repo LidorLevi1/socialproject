@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+{% block content %}
+
+    <style>
+        .label{
+            color: white;
+        }
+        img {
+          border-radius: 50%;
+        }
+    </style>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="card" style="width: 80rem;">
+        <div class="card-body">
+            <div>
+                <img src="{{user.profile.imageUrl}}" class="profile-pic" alt="Avatar" style="width:50px">
+                <a>{{user.username}}</a>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"></label>
+                <input type="text" class="form-control" name='imageUrl' placeholder="ImageUrl">
+              </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label"></label>
+            <input type="text" class="form-control" name='body' placeholder="What's on youre mind...">
+          </div>
+          <input type="submit" value="פרסם פוסט" class="btn btn-primary" />
+        </form>
+        
+        </div>
+      </div>
+</form>
+
+{% endblock %}

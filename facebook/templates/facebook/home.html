@@ -1,0 +1,135 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .theme{
+        position: static;
+    }
+    .profilepic{
+        position: relative;
+    }
+    .right{
+        text-align: center;
+    }
+
+</style>
+<div style="text-align: center">
+    <img src="https://www.theedgesusu.co.uk/wp-content/uploads/2020/04/92196067_521028928838070_5012677380796317696_n.jpg"  class="theme" style="width:1300px ;height:280px;border-radius: 0.5%;">
+</div>
+
+<form action="{% url 'addpost' user.id %}" method="post">
+    {% csrf_token %}
+    <div class="card" style="width: 81rem;margin-top: 20px;">
+        <div class="card-body">
+            <div>
+                <img src="{{user.profile.imageUrl}}" class="profile-pic" alt="Avatar" style="width:50px">
+                <a>{{user.profile.user}}</a>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"></label>
+                <input type="text" class="form-control" name='imageUrl' placeholder="ImageUrl">
+              </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label"></label>
+            <input type="text" class="form-control" name='body' placeholder="What's on youre mind...">
+          </div>
+          <input type="submit" value="פרסם פוסט" class="btn btn-primary" />
+        </form>
+        
+        </div>
+      </div>
+</form>
+
+
+
+
+{% for posts in post %}
+{% if request.user.profile in posts.user.profile.friends.all %}
+<div class="card text-dark bg-light mb-3" style="margin-top:40px ;text-align: left;" >
+    <a href="{% url 'profile' posts.user.profile.user %}"><img  src="{{posts.user.profile.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+    <a href="{% url 'profile' posts.user.profile.user %}">{{posts.user}}</a>
+    <a href="{% url 'post' posts.id %}">View Post</a>
+    <div class="card-header"> created {{posts.created|timesince}} </div>
+    {% if posts.user == request.user %} 
+    <span style="float: right;">
+        <a href="{%url 'editpost' posts.id %}" class="btn btn-sm btn-secondary">Edit</a>
+        <a href="{%url 'removepost' posts.id %}" class="btn btn-sm btn-secondary">Delete</a>
+    </span>
+    {% endif %}
+    <div class="card-body" style="text-align: right;">
+    
+    {% if posts.imageUrl == "" %}
+    {% else %}
+        <img src="{{posts.imageUrl}}" id="" style="height: 400px;width: 700px;">
+    {% endif %}
+
+        <div class="card">
+            <p class="card-text">{{posts.body|linebreaks}}</p>
+        </div>    
+    </div>
+
+    <form action="{% url 'like_post' posts.id %}" method="POST">
+        {% csrf_token %} 
+    <div>
+        {% if user.profile in posts.likes.all %}
+            <button type="submit" name="post_id" value="{{posts.id}}" class="btn btn-secondary" style="margin-top: 20px;">unlike</button>
+        {% else %}
+            <button type="submit" name="post_id" value="{{posts.id}}" class="btn btn-primary" style="margin-top: 20px;">like</button>
+        {% endif %}
+        <h1>Likes - {{ posts.likes.count }}</h1>
+        
+    </div>
+    </form>
+
+
+    <div class="card-body">
+        <h5 class="card-title">comments</h5>
+        <div style="overflow-y: scroll;height:200px;margin-top: 20px; ">
+        {% for comment in posts.comment_set.all %}
+         
+        <div class="card" style="margin-top: 30px;" >
+        {% if comment.user == request.user %}
+        <span style="float: right;">
+            <a href="{%url 'editcomment' comment.id %}" class="btn btn-sm btn-secondary">Edit</a>
+            <a href="{%url 'removecomment' comment.id %}" class="btn btn-sm btn-secondary">Delete</a>
+        </span>
+        {% endif %}
+
+        
+            <div class="card-body">
+                
+                    <a href="{% url 'profile' comment.user %}"><img src="{{comment.user.profile.imageUrl}}" style="border-radius: 50%;width: 30px; height: 30px;"></a>
+                <a href="{% url 'profile' comment.user %}"><h5 class="card-title">{{comment.user}}</h5></a>
+                <h6 class="card-subtitle mb-2 text-muted">{{comment.created|timesince}}</h6>
+                <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+                    <p class="card-text">{{comment.body}}</p>
+                </div>
+                     
+              
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+        
+          <div class="card" style="margin-top: 30px;text-align: right;" >
+            <div class="card-body">
+                <form method="post" action="{% url 'addcomment' posts.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">הוספת תגובה</label>
+                        <textarea class="form-control" name="body" id="" rows="3"></textarea>
+                        <input type="submit" value="מה דעתך?" class="btn btn-primary" style="margin-top: 20px;">
+                    </div>
+                </form>
+                
+            </div>
+          </div>
+      </div>
+  </div>
+  
+  
+  {% endif %}
+  {% endfor %}
+    
+    
+{% endblock %}
